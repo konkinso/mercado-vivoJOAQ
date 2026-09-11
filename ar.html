@@ -3,84 +3,34 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>Visor AR — Citrato de Magnesio</title>
-    <!-- Librerías A-Frame y AR.js -->
+    <title>Visor AR — Mercado Vivo</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
     <style>
       body { margin: 0; overflow: hidden; font-family: system-ui, sans-serif; background: #000; }
-      
-      /* Pantalla inicial para disparar la cámara en iOS Safari */
       #pantalla-inicio {
-        position: fixed;
-        top: 0; left: 0; width: 100vw; height: 100vh;
-        background: #0f172a;
-        z-index: 99999;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        color: white;
-        text-align: center;
-        padding: 20px;
-        box-sizing: border-box;
+        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        background: #0f172a; z-index: 99999; display: flex; flex-direction: column;
+        justify-content: center; align-items: center; color: white; text-align: center; padding: 20px;
       }
-
       .btn-activar {
-        background: #25d366;
-        color: white;
-        border: none;
-        padding: 16px 32px;
-        font-size: 18px;
-        font-weight: bold;
-        border-radius: 30px;
-        cursor: pointer;
-        box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
-        margin-top: 20px;
+        background: #25d366; color: white; border: none; padding: 16px 32px;
+        font-size: 18px; font-weight: bold; border-radius: 30px; cursor: pointer;
       }
-
-      /* HUD Flotante tipo Juego */
       .hud-ar {
-        position: fixed;
-        bottom: 25px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 1000;
-        background: rgba(15, 23, 42, 0.9);
-        color: #ffffff;
-        padding: 12px 20px;
-        border-radius: 20px;
-        text-align: center;
-        border: 2px solid #0099ff;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        min-width: 250px;
-      }
-      
-      .btn-volver {
-        position: fixed;
-        top: 15px;
-        left: 15px;
-        z-index: 1000;
-        background: #ffffff;
-        color: #000;
-        padding: 8px 16px;
-        border-radius: 20px;
-        text-decoration: none;
-        font-weight: bold;
-        font-size: 13px;
+        position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+        z-index: 1000; background: rgba(15, 23, 42, 0.9); color: #ffffff;
+        padding: 12px 20px; border-radius: 20px; text-align: center; border: 2px solid #0099ff;
       }
     </style>
   </head>
   <body>
 
-    <!-- Pantalla interactiva obligatoria para iPhone -->
     <div id="pantalla-inicio">
       <h2>🍃 Mercado Vivo AR</h2>
-      <p>Presiona el botón para activar la cámara y escanear el producto.</p>
+      <p>Apunta al marcador Hiro tras activar la cámara.</p>
       <button class="btn-activar" onclick="activarCamara()">📷 Iniciar Cámara AR</button>
     </div>
-
-    <a href="index.html" class="btn-volver">← Volver</a>
 
     <div class="hud-ar">
       <h3 style="margin:0; color:#0099ff;">💊 Citrato de Magnesio</h3>
@@ -88,18 +38,14 @@
       <div style="font-weight:bold; color:#25d366; margin-top:3px;">S/ 45.00</div>
     </div>
 
-    <!-- Escena AR -->
     <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
-      <a-assets>
-        <img id="etiqueta-frasco" src="imagenes/CitratoDeMagnesio.jpg" />
-      </a-assets>
-
       <a-marker preset="hiro">
+        <!-- Cilindro 3D con color visible de respaldo y rotación -->
         <a-cylinder 
           position="0 0.8 0" 
           radius="0.45" 
           height="1.3" 
-          src="#etiqueta-frasco"
+          color="#00a896"
           animation="property: rotation; to: 0 360 0; loop: true; dur: 7000; easing: linear">
           <a-cylinder position="0 0.68 0" radius="0.42" height="0.2" color="#FFFFFF"></a-cylinder>
         </a-cylinder>
@@ -110,14 +56,12 @@
 
     <script>
       function activarCamara() {
-        // Pedir permiso explícito a la cámara del iPhone mediante WebRTC
         navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-          .then(function(stream) {
-            // Ocultar pantalla de inicio
+          .then(function() {
             document.getElementById('pantalla-inicio').style.display = 'none';
           })
           .catch(function(err) {
-            alert('Por favor habilita los permisos de cámara en los ajustes de Safari.');
+            alert('Habilita los permisos de cámara en Safari.');
           });
       }
     </script>
