@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iniciar sesión — Mercado Vivo</title>
+    <link rel="stylesheet" href="css/login.css" />
+  </head>
+  <body class="login-vista">
+    <div class="lg-envoltorio">
+      <div class="lg-marca">🌿 Mercado Vivo</div>
+
+      <div class="lg-tarjeta">
+        <div class="lg-sello">🔑</div>
+        <h1>Acceso de tiendas</h1>
+        <p class="lg-sub">
+          Inicia sesión con el usuario y contraseña que te compartió el
+          administrador.
+        </p>
+
+        <form id="form-auth">
+          <div class="lg-campo">
+            <label>Usuario</label>
+            <input
+              type="text"
+              id="campo-correo"
+              placeholder="tu nombre de usuario"
+              required
+            />
+          </div>
+          <div class="lg-campo">
+            <label>Contraseña</label>
+            <input
+              type="password"
+              id="campo-clave"
+              placeholder="Tu contraseña"
+              required
+            />
+          </div>
+          <button type="submit" class="lg-boton">Ingresar</button>
+        </form>
+
+        <p class="lg-mensaje" id="mensaje-auth"></p>
+
+        <div class="lg-pie">
+          ¿Todavía no tienes cuenta? Escríbenos para sumar tu tienda al
+          directorio — nosotros creamos tu acceso.
+        </div>
+      </div>
+
+      <a href="index.html" class="lg-volver">← Volver al directorio</a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="login.js"></script>
+  </body>
+</html>

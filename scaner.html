@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Escanear producto — Mercado Vivo</title>
+    <link rel="stylesheet" href="css/escaner.css" />
+  </head>
+  <body class="escaner-vista">
+    <header class="es-encabezado">
+      <a href="index.html" class="es-marca">🌿 Mercado Vivo</a>
+      <a href="index.html" class="es-volver">Directorio</a>
+    </header>
+
+    <div class="es-contenedor">
+      <div class="es-intro">
+        <h1>Escanea un producto</h1>
+        <p>
+          Apunta la cámara a la etiqueta, con buena luz. Leemos el texto y
+          buscamos el producto — sirve igual para cliente o vendedor.
+        </p>
+        <div class="es-tip">
+          💡 En frascos: apunta de frente al nombre más grande de la etiqueta.
+        </div>
+      </div>
+
+      <div class="es-visor" id="lector-camara">
+        <span class="es-mensaje-inicial" id="mensaje-camara"
+          >Presiona "Iniciar cámara" para escanear la etiqueta</span
+        >
+      </div>
+
+      <div class="es-controles">
+        <button class="es-boton es-boton-primario" id="boton-iniciar">
+          Iniciar cámara
+        </button>
+        <button
+          class="es-boton es-boton-curcuma"
+          id="boton-capturar"
+          style="display: none"
+        >
+          📸 Capturar etiqueta
+        </button>
+        <button
+          class="es-boton es-boton-fantasma"
+          id="boton-detener"
+          style="display: none"
+        >
+          Detener
+        </button>
+      </div>
+      <p class="es-mensaje-estado" id="mensaje-ocr"></p>
+
+      <div class="es-alternativa">
+        <label>¿Prefieres escribir el nombre directamente?</label>
+        <div class="es-fila-busqueda">
+          <input
+            class="es-input-busqueda"
+            id="nombre-manual"
+            type="text"
+            placeholder="Ej. Colagenus, Citrato de Magnesio…"
+          />
+          <button class="es-boton es-boton-fantasma" id="boton-buscar-manual">
+            Buscar
+          </button>
+        </div>
+      </div>
+
+      <div class="es-resultado" id="resultado">
+        <p class="es-resultado-vacio">Aún no escaneaste ningún producto.</p>
+      </div>
+
+      <div class="es-similares" id="similares-wrap" style="display: none">
+        <h2>Productos parecidos en otras tiendas</h2>
+        <div class="es-grilla-similares" id="grilla-similares"></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="https://unpkg.com/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="escaner.js"></script>
+  </body>
+</html>

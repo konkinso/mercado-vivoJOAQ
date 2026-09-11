@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel de tienda — Mercado Vivo</title>
+    <link rel="stylesheet" href="css/admin.css" />
+  </head>
+  <body class="admin-tienda">
+    <!-- ============ BARRA LATERAL ============ -->
+    <aside class="ad-sidebar">
+      <div class="ad-sidebar-marca">
+        <div class="tienda-nombre" id="nombre-tienda-sidebar">Tu tienda</div>
+        <div class="marca-sub">Panel de administración</div>
+      </div>
+
+      <nav class="ad-nav">
+        <button class="ad-nav-item activo" data-vista="vista-dashboard">
+          <span class="icono">📊</span> Dashboard
+        </button>
+        <button class="ad-nav-item" data-vista="vista-productos">
+          <span class="icono">📦</span> Productos
+        </button>
+        <button class="ad-nav-item" data-vista="vista-pedidos">
+          <span class="icono">🧾</span> Pedidos
+        </button>
+        <button class="ad-nav-item" data-vista="vista-escanear">
+          <span class="icono">📷</span> Escanear / agregar
+        </button>
+        <button class="ad-nav-item" data-vista="vista-cuenta">
+          <span class="icono">🏬</span> Mi tienda
+        </button>
+      </nav>
+
+      <div class="ad-sidebar-pie">
+        <a href="index.html" target="_blank">Ver directorio público</a>
+        <button onclick="cerrarSesion()">Cerrar sesión</button>
+      </div>
+    </aside>
+
+    <!-- ============ CONTENIDO PRINCIPAL ============ -->
+    <main class="ad-main">
+      <div id="aviso-suspendido" style="display: none">
+        <h1 class="ad-titulo">Tu cuenta está suspendida</h1>
+        <p class="ad-subtitulo">
+          Tu acceso al panel está pausado, probablemente por un pago pendiente.
+          Contacta al administrador de Mercado Vivo para reactivar tu cuenta.
+        </p>
+        <button class="ad-boton" onclick="cerrarSesion()">Cerrar sesión</button>
+      </div>
+
+      <div id="contenido-admin" style="display: none">
+        <!-- ---------- VISTA: DASHBOARD ---------- -->
+        <section class="ad-vista visible" id="vista-dashboard">
+          <h1 class="ad-titulo">Dashboard</h1>
+          <p class="ad-subtitulo">Resumen de tu tienda en Mercado Vivo.</p>
+
+          <div class="ad-ticket-estado">
+            <div>
+              <div
+                style="
+                  font-size: 0.8rem;
+                  color: var(--ad-tinta-suave);
+                  margin-bottom: 4px;
+                "
+              >
+                Estado de tu cuenta
+              </div>
+              <span class="ad-etiqueta-estado" id="estado-pago-tienda"
+                >Cargando…</span
+              >
+            </div>
+            <div style="text-align: right">
+              <div style="font-size: 0.8rem; color: var(--ad-tinta-suave)">
+                Suscripción
+              </div>
+              <div
+                class="mono"
+                style="font-size: 1.1rem; color: var(--ad-oxido)"
+              >
+                S/20 / mes
+              </div>
+            </div>
+          </div>
+
+          <div class="ad-metricas">
+            <div class="ad-tarjeta-metrica">
+              <div class="numero" id="numero-productos">—</div>
+              <div class="etiqueta">Productos activos</div>
+            </div>
+            <div class="ad-tarjeta-metrica">
+              <div class="numero" id="precio-promedio">—</div>
+              <div class="etiqueta">Precio promedio</div>
+            </div>
+            <div class="ad-tarjeta-metrica">
+              <div class="numero" id="numero-categorias">—</div>
+              <div class="etiqueta">Categorías distintas</div>
+            </div>
+          </div>
+
+          <div class="ad-doble-columna">
+            <div class="ad-lista-destacados">
+              <h3>⭐ Productos estrella (los más caros del catálogo)</h3>
+              <div id="lista-estrella">
+                <p class="ad-vacio" style="padding: 12px 0">Sin datos aún.</p>
+              </div>
+            </div>
+            <div class="ad-lista-destacados">
+              <h3>🦴 Productos hueso (los más económicos)</h3>
+              <div id="lista-hueso">
+                <p class="ad-vacio" style="padding: 12px 0">Sin datos aún.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="ad-tarjeta-link">
+            <div class="etiqueta">
+              Tu link público — compártelo con tus clientes
+            </div>
+            <a id="link-publico-tienda" href="#" target="_blank">—</a>
+          </div>
+        </section>
+
+        <!-- ---------- VISTA: PRODUCTOS ---------- -->
+        <section class="ad-vista" id="vista-productos">
+          <h1 class="ad-titulo">Tus productos</h1>
+          <p class="ad-subtitulo">
+            Administra tu catálogo: edita precios o elimina productos.
+          </p>
+
+          <table class="ad-tabla">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th>Precio</th>
+                <th>Código</th>
+                <th>Stock</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="cuerpo-tabla-productos">
+              <tr>
+                <td colspan="6" class="ad-vacio">Cargando productos…</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- ---------- VISTA: PEDIDOS ---------- -->
+        <section class="ad-vista" id="vista-pedidos">
+          <h1 class="ad-titulo">Armar pedido desde WhatsApp</h1>
+          <p class="ad-subtitulo">
+            Pega tal cual el mensaje que te mandó el cliente — el sistema busca
+            los productos por ti.
+          </p>
+
+          <div class="ad-form-producto">
+            <div class="ad-campo">
+              <label
+                >Pedido del cliente (una línea por producto, ej. "2
+                colageno")</label
+              >
+              <textarea
+                id="texto-pedido-wsp"
+                rows="5"
+                placeholder="2 colageno&#10;1 citrato de magnesio&#10;3 extracto de sabila"
+                style="
+                  padding: 10px 14px;
+                  border-radius: 8px;
+                  border: 1px solid var(--ad-linea);
+                  background: var(--ad-papel);
+                  font-family: 'Work Sans', sans-serif;
+                  font-size: 0.92rem;
+                  resize: vertical;
+                "
+              ></textarea>
+            </div>
+            <div class="ad-campo">
+              <label
+                >Número de WhatsApp del cliente (opcional, para
+                confirmar)</label
+              >
+              <input
+                type="text"
+                id="telefono-cliente-pedido"
+                placeholder="Ej. 987654321"
+              />
+            </div>
+            <button
+              type="button"
+              class="ad-boton ad-boton-primario"
+              id="boton-interpretar-pedido"
+            >
+              Interpretar pedido
+            </button>
+          </div>
+
+          <div id="resultado-pedido" style="display: none">
+            <h2
+              style="
+                font-family: 'Fraunces', serif;
+                font-size: 1.2rem;
+                margin-bottom: 12px;
+              "
+            >
+              Boleta armada
+            </h2>
+            <table class="ad-tabla">
+              <thead>
+                <tr>
+                  <th>Cant.</th>
+                  <th>Producto</th>
+                  <th>Precio unit.</th>
+                  <th>Subtotal</th>
+                  <th>Coincidencia</th>
+                </tr>
+              </thead>
+              <tbody id="cuerpo-boleta"></tbody>
+            </table>
+            <div
+              style="text-align: right; margin-top: 14px; font-size: 1.2rem"
+              class="mono"
+            >
+              Total:
+              <strong id="total-boleta" style="color: var(--ad-oxido)"
+                >S/0.00</strong
+              >
+            </div>
+            <div
+              style="
+                display: flex;
+                gap: 10px;
+                margin-top: 16px;
+                flex-wrap: wrap;
+              "
+            >
+              <button
+                class="ad-boton ad-boton-primario"
+                id="boton-confirmar-wsp"
+              >
+                💬 Confirmar por WhatsApp
+              </button>
+              <button class="ad-boton" id="boton-nuevo-pedido">
+                Empezar de nuevo
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ---------- VISTA: ESCANEAR / AGREGAR ---------- -->
+        <section class="ad-vista" id="vista-escanear">
+          <h1 class="ad-titulo">Agregar producto nuevo</h1>
+          <p class="ad-subtitulo">
+            Escanea el código de barras para autocompletar, o llena el
+            formulario manualmente.
+          </p>
+
+          <div class="ad-form-producto">
+            <form id="form-producto">
+              <div class="ad-campo">
+                <label>Nombre del producto</label>
+                <input
+                  type="text"
+                  id="campo-nombre"
+                  placeholder="Ej. Extracto de sábila 250ml"
+                  required
+                />
+              </div>
+              <div class="ad-campo">
+                <label>Foto del producto</label>
+                <input type="file" id="campo-imagen" accept="image/*" />
+                <div
+                  id="previsualizacion-imagen"
+                  style="display: none; margin-top: 8px"
+                >
+                  <img
+                    id="imagen-previsualizada"
+                    style="
+                      width: 90px;
+                      height: 90px;
+                      object-fit: cover;
+                      border-radius: 10px;
+                      border: 1px solid var(--ad-linea);
+                    "
+                  />
+                </div>
+                <p
+                  id="mensaje-imagen"
+                  style="
+                    font-size: 0.8rem;
+                    color: var(--ad-tinta-suave);
+                    margin-top: 6px;
+                  "
+                ></p>
+              </div>
+              <div class="ad-campo">
+                <label>Precio (S/)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  id="campo-precio"
+                  placeholder="Ej. 18.00"
+                  required
+                />
+              </div>
+              <div class="ad-campo">
+                <label
+                  >Stock disponible (déjalo vacío si no llevas control)</label
+                >
+                <input type="number" id="campo-stock" placeholder="Ej. 12" />
+              </div>
+              <div class="ad-campo">
+                <label>Categoría</label>
+                <input
+                  type="text"
+                  id="campo-categoria"
+                  placeholder="Ej. Extractos, Cápsulas, Colágenos"
+                />
+              </div>
+              <div class="ad-campo">
+                <label>Código de barras</label>
+                <div class="ad-campo-codigo-fila">
+                  <input
+                    type="text"
+                    id="campo-codigo"
+                    placeholder="Ej. 7751271012345"
+                    style="flex: 1"
+                  />
+                  <button
+                    type="button"
+                    class="ad-boton"
+                    id="boton-escanear-admin"
+                  >
+                    📷 Escanear
+                  </button>
+                </div>
+                <div
+                  id="lector-camara-admin"
+                  style="
+                    display: none;
+                    margin-top: 10px;
+                    border-radius: 10px;
+                    overflow: hidden;
+                    min-height: 220px;
+                    background: #1c1712;
+                  "
+                ></div>
+                <p
+                  id="mensaje-autocompletado"
+                  style="
+                    font-size: 0.82rem;
+                    color: var(--ad-tinta-suave);
+                    margin-top: 6px;
+                  "
+                ></p>
+              </div>
+              <button
+                type="submit"
+                class="ad-boton ad-boton-primario"
+                id="boton-guardar-producto"
+              >
+                Guardar producto
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <!-- ---------- VISTA: MI TIENDA ---------- -->
+        <section class="ad-vista" id="vista-cuenta">
+          <h1 class="ad-titulo">Mi tienda</h1>
+          <p class="ad-subtitulo">Información de tu cuenta en Mercado Vivo.</p>
+
+          <div class="ad-form-producto" style="max-width: 420px">
+            <div class="ad-campo">
+              <label>Nombre de la tienda</label>
+              <div id="cuenta-nombre" style="padding: 10px 0; font-weight: 600">
+                —
+              </div>
+            </div>
+            <div class="ad-campo">
+              <label>Estado de la cuenta</label>
+              <div style="padding: 6px 0">
+                <span class="ad-etiqueta-estado" id="cuenta-estado">—</span>
+              </div>
+            </div>
+            <div class="ad-campo">
+              <label>Link público</label>
+              <a
+                id="cuenta-link"
+                href="#"
+                target="_blank"
+                style="display: block; padding: 6px 0"
+                >—</a
+              >
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Modal simple de edición -->
+    <div
+      id="modal-editar"
+      style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(43, 38, 32, 0.5);
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+        padding: 20px;
+      "
+    >
+      <div
+        style="
+          background: var(--ad-papel-carta);
+          border-radius: var(--ad-radio);
+          padding: 26px;
+          max-width: 400px;
+          width: 100%;
+        "
+      >
+        <h3
+          style="
+            font-family: 'Fraunces', serif;
+            font-size: 1.15rem;
+            margin-bottom: 16px;
+          "
+        >
+          Editar producto
+        </h3>
+        <form id="form-editar-producto">
+          <input type="hidden" id="editar-id" />
+          <div class="ad-campo">
+            <label>Nombre</label>
+            <input type="text" id="editar-nombre" required />
+          </div>
+          <div class="ad-campo">
+            <label>Foto (deja vacío para mantener la actual)</label>
+            <input type="file" id="editar-imagen" accept="image/*" />
+            <img
+              id="editar-imagen-actual"
+              style="
+                width: 70px;
+                height: 70px;
+                object-fit: cover;
+                border-radius: 8px;
+                margin-top: 6px;
+                border: 1px solid var(--ad-linea);
+                display: none;
+              "
+            />
+          </div>
+          <div class="ad-campo">
+            <label>Precio (S/)</label>
+            <input type="number" step="0.01" id="editar-precio" required />
+          </div>
+          <div class="ad-campo">
+            <label>Categoría</label>
+            <input type="text" id="editar-categoria" />
+          </div>
+          <div class="ad-campo">
+            <label>Código de barras</label>
+            <input type="text" id="editar-codigo" />
+          </div>
+          <div style="display: flex; gap: 10px; margin-top: 6px">
+            <button
+              type="submit"
+              class="ad-boton ad-boton-primario"
+              style="flex: 1"
+            >
+              Guardar cambios
+            </button>
+            <button
+              type="button"
+              class="ad-boton"
+              onclick="cerrarModalEditar()"
+              style="flex: 1"
+            >
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script src="admin.js"></script>
+  </body>
+</html>

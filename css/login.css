@@ -1,0 +1,171 @@
+/* ============================================
+   MERCADO VIVO — css/login.css
+   Identidad: "el umbral" — la puerta antes de entrar
+   a cualquiera de los dos mundos del sistema.
+   Tarjeta central tipo sello, fondo oscuro envolvente
+   con textura sutil de hojas.
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --lg-fondo: #132a20;
+  --lg-fondo-oscuro: #0d1f17;
+  --lg-tarjeta: #fbf8f2;
+  --lg-tinta: #17201b;
+  --lg-tinta-suave: #71685c;
+  --lg-curcuma: #d9a441;
+  --lg-verde: #1f3a2e;
+  --lg-linea: #e4ddce;
+}
+
+* {
+  box-sizing: border-box;
+}
+body.login-vista {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(
+      circle at 20% 15%,
+      rgba(217, 164, 65, 0.12),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 85% 85%,
+      rgba(111, 217, 154, 0.08),
+      transparent 50%
+    ),
+    var(--lg-fondo);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Work Sans', sans-serif;
+  padding: 24px;
+}
+
+.lg-envoltorio {
+  width: 100%;
+  max-width: 400px;
+}
+
+.lg-marca {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: #f6f3ec;
+  margin-bottom: 24px;
+}
+
+.lg-tarjeta {
+  background: var(--lg-tarjeta);
+  border-radius: 18px;
+  padding: 32px 28px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+  position: relative;
+}
+
+.lg-sello {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--lg-curcuma);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  margin: 0 auto 16px;
+  box-shadow: 0 4px 14px rgba(217, 164, 65, 0.4);
+}
+
+.lg-tarjeta h1 {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 1.35rem;
+  color: var(--lg-tinta);
+  text-align: center;
+  margin: 0 0 6px;
+}
+.lg-tarjeta p.lg-sub {
+  font-size: 0.85rem;
+  color: var(--lg-tinta-suave);
+  text-align: center;
+  margin: 0 0 26px;
+  line-height: 1.5;
+}
+
+.lg-campo {
+  margin-bottom: 16px;
+}
+.lg-campo label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--lg-tinta-suave);
+  margin-bottom: 6px;
+}
+.lg-campo input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1.5px solid var(--lg-linea);
+  background: #fff;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 0.95rem;
+  color: var(--lg-tinta);
+}
+.lg-campo input:focus {
+  outline: none;
+  border-color: var(--lg-verde);
+}
+
+.lg-boton {
+  width: 100%;
+  padding: 13px;
+  border-radius: 999px;
+  border: none;
+  background: var(--lg-verde);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.lg-boton:hover {
+  background: #132a20;
+}
+.lg-boton:active {
+  transform: scale(0.98);
+}
+
+.lg-mensaje {
+  margin-top: 14px;
+  font-size: 0.85rem;
+  text-align: center;
+  min-height: 20px;
+}
+
+.lg-pie {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px dashed var(--lg-linea);
+  font-size: 0.78rem;
+  color: var(--lg-tinta-suave);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.lg-volver {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.82rem;
+  color: rgba(246, 243, 236, 0.6);
+}
+.lg-volver:hover {
+  color: #f6f3ec;
+}

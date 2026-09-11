@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Catálogo — Mercado Vivo</title>
+    <link rel="stylesheet" href="css/tienda.css" />
+  </head>
+  <body class="tienda-publica">
+    <header class="tv-encabezado">
+      <a href="index.html" class="tv-marca">🌿 Mercado Vivo</a>
+      <a href="escaner.html" class="tv-boton">Escanear producto</a>
+    </header>
+
+    <div class="tv-contenedor">
+      <div class="tv-migas">
+        <a href="index.html">Directorio</a> /
+        <a href="escaner.html" class="tv-boton tv-boton-primario"
+          >Escanear producto</a
+        >
+        <span id="miga-tienda">Tienda</span>
+      </div>
+
+      <div class="tv-cabecera-tienda">
+        <div class="tv-sello" id="sello-tienda">?</div>
+        <div>
+          <h1 id="nombre-tienda" style="font-size: 1.7rem">Cargando tienda…</h1>
+          <div id="rubro-tienda" style="color: var(--tv-tinta-suave)"></div>
+        </div>
+      </div>
+
+      <div class="tv-barra-herramientas">
+        <input
+          class="tv-campo-buscar"
+          id="buscador-productos"
+          type="text"
+          placeholder="Buscar producto en esta tienda…"
+        />
+      </div>
+
+      <div class="tv-grilla-productos" id="grilla-productos">
+        <p class="tv-vacio">Cargando productos…</p>
+      </div>
+    </div>
+
+    <!-- Botón flotante del carrito -->
+    <button class="tv-carrito-flotante" id="boton-carrito">
+      🛒
+      <span class="tv-carrito-badge" id="badge-carrito" style="display: none"
+        >0</span
+      >
+    </button>
+
+    <!-- Drawer del carrito -->
+    <div class="tv-fondo-drawer" id="fondo-drawer"></div>
+    <aside class="tv-drawer" id="drawer-carrito">
+      <div class="tv-drawer-cabecera">
+        <h2>Tu pedido</h2>
+        <button class="tv-cerrar-drawer" id="cerrar-drawer">✕</button>
+      </div>
+      <div class="tv-drawer-items" id="lista-carrito">
+        <p class="tv-vacio">Tu carrito está vacío.</p>
+      </div>
+      <div class="tv-drawer-pie">
+        <div class="tv-drawer-total">
+          <span>Total</span><strong id="total-carrito">S/0.00</strong>
+        </div>
+        <input
+          type="text"
+          class="tv-campo-telefono"
+          id="telefono-comprador"
+          placeholder="Tu número de WhatsApp (opcional)"
+        />
+        <button
+          class="tv-boton tv-boton-primario"
+          id="boton-enviar-pedido"
+          style="width: 100%; justify-content: center"
+        >
+          Enviar pedido por WhatsApp
+        </button>
+      </div>
+    </aside>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="tienda.js"></script>
+  </body>
+</html>

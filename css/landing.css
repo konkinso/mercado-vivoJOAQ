@@ -1,0 +1,220 @@
+/* ============================================
+   MERCADO VIVO — 02. LANDING (landing.css)
+   ============================================ */
+
+/* Hero Principal */
+.hero {
+  padding: clamp(48px, 8vw, 96px) clamp(20px, 5vw, 64px) 56px;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 48px;
+  align-items: center;
+  background: radial-gradient(
+      circle at 85% 20%,
+      rgba(217, 164, 65, 0.16),
+      transparent 55%
+    ),
+    var(--papel);
+}
+
+.hero .eyebrow {
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  color: var(--tierra);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hero h1 {
+  font-size: clamp(2.4rem, 4.2vw, 3.6rem);
+  line-height: 1.05;
+}
+
+.hero p.lead {
+  margin-top: 18px;
+  font-size: 1.1rem;
+  color: var(--tinta-suave);
+  max-width: 46ch;
+  line-height: 1.6;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 12px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+/* Ficha del Producto de Muestra (Sábila Bionaturista) */
+.hero-visual {
+  background: var(--verde-monte);
+  border-radius: 20px;
+  padding: 28px;
+  color: var(--papel);
+  box-shadow: var(--sombra);
+}
+
+.ficha-demo {
+  background: var(--papel-carta);
+  color: var(--tinta);
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.ficha-demo .icono-producto {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  background: var(--curcuma-suave);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.ficha-demo .datos {
+  flex: 1;
+}
+
+.ficha-demo .precio {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--verde-monte-oscuro);
+}
+
+/* Animación de la línea láser del escáner */
+.escaneo-linea {
+  margin-top: 16px;
+  height: 3px;
+  background: var(--curcuma);
+  border-radius: 2px;
+  animation: animLaser 2s ease-in-out infinite alternate;
+}
+
+@keyframes animLaser {
+  0% {
+    transform: translateY(0);
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(30px);
+    opacity: 1;
+    box-shadow: 0 0 10px var(--curcuma);
+  }
+}
+
+.hero-visual .pie {
+  font-size: 0.8rem;
+  margin-top: 14px;
+  color: var(--curcuma-suave);
+}
+
+/* Secciones y Directorio */
+.seccion {
+  padding: 56px clamp(20px, 5vw, 64px);
+}
+
+.seccion-titulo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 28px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.campo-buscar {
+  padding: 11px 16px;
+  border-radius: 999px;
+  border: 1.5px solid var(--linea);
+  font-family: 'Work Sans', sans-serif;
+  font-size: 0.95rem;
+  background: var(--papel-carta);
+}
+
+.grilla-tiendas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 18px;
+}
+
+/* Franja de Características */
+.franja-oscura {
+  background: var(--verde-monte-oscuro);
+  color: var(--papel);
+}
+
+.grilla-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 32px;
+}
+
+.feature .marcador {
+  font-family: 'Fraunces', serif;
+  font-size: 1.2rem;
+  color: var(--curcuma);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+/* Tarjeta de Membresía S/20 */
+.tarjeta-precio {
+  background: var(--papel-carta);
+  border: 1.5px solid var(--curcuma);
+  border-radius: var(--radio);
+  padding: 32px;
+  max-width: 380px;
+  box-shadow: var(--sombra);
+}
+
+.tarjeta-precio .monto {
+  font-family: 'Fraunces', serif;
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: var(--verde-monte-oscuro);
+}
+
+.tarjeta-precio .monto span {
+  font-size: 1rem;
+  color: var(--tinta-suave);
+  font-family: 'Work Sans', sans-serif;
+}
+
+.lista-incluye {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lista-incluye li {
+  font-size: 0.92rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lista-incluye li::before {
+  content: '✓';
+  color: var(--verde-monte);
+  font-weight: bold;
+}
+
+/* Adaptación para celulares */
+@media (max-width: 840px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+}

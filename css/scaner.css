@@ -1,0 +1,406 @@
+/* ============================================
+   MERCADO VIVO — css/escaner.css
+   Identidad de esta vista: "sostener un dispositivo".
+   Cámara a pantalla casi completa, marco de escaneo
+   con esquinas que iluminan, resultado como tarjeta
+   que sube desde abajo.
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --es-fondo: #0e1512;
+  --es-panel: #17221b;
+  --es-verde: #1f3a2e;
+  --es-verde-brillo: #6fd99a;
+  --es-curcuma: #d9a441;
+  --es-papel: #fbf8f2;
+  --es-tinta: #17201b;
+  --es-tinta-suave: #5c685f;
+  --es-linea: #2a3830;
+  --es-radio: 16px;
+}
+
+* {
+  box-sizing: border-box;
+}
+body.escaner-vista {
+  margin: 0;
+  background: var(--es-fondo);
+  color: var(--es-papel);
+  font-family: 'Work Sans', sans-serif;
+  min-height: 100vh;
+}
+
+.es-encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px clamp(16px, 4vw, 40px);
+  background: transparent;
+  position: relative;
+  z-index: 5;
+}
+.es-marca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--es-papel);
+}
+.es-volver {
+  color: rgba(251, 248, 242, 0.75);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(251, 248, 242, 0.25);
+}
+.es-volver:hover {
+  border-color: var(--es-verde-brillo);
+  color: var(--es-verde-brillo);
+}
+
+.es-contenedor {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 32px) 60px;
+}
+
+.es-intro {
+  text-align: center;
+  margin-bottom: 18px;
+}
+.es-intro h1 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--es-papel);
+  margin: 0 0 6px;
+}
+.es-intro p {
+  font-size: 0.88rem;
+  color: rgba(251, 248, 242, 0.65);
+  max-width: 44ch;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+.es-tip {
+  font-size: 0.8rem;
+  color: var(--es-curcuma);
+  margin-top: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+}
+
+/* ---------- Visor de cámara con marco de escaneo ---------- */
+.es-visor {
+  position: relative;
+  aspect-ratio: 3/4;
+  max-height: 56vh;
+  background: var(--es-panel);
+  border-radius: var(--es-radio);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+.es-visor video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.es-mensaje-inicial {
+  color: rgba(251, 248, 242, 0.55);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 0 30px;
+}
+
+.es-marco-escaneo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 78%;
+  height: 42%;
+  pointer-events: none;
+}
+.es-marco-escaneo span {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border-color: var(--es-curcuma);
+}
+.es-marco-escaneo .esq-tl {
+  top: 0;
+  left: 0;
+  border-top: 3px solid;
+  border-left: 3px solid;
+  border-radius: 6px 0 0 0;
+}
+.es-marco-escaneo .esq-tr {
+  top: 0;
+  right: 0;
+  border-top: 3px solid;
+  border-right: 3px solid;
+  border-radius: 0 6px 0 0;
+}
+.es-marco-escaneo .esq-bl {
+  bottom: 0;
+  left: 0;
+  border-bottom: 3px solid;
+  border-left: 3px solid;
+  border-radius: 0 0 0 6px;
+}
+.es-marco-escaneo .esq-br {
+  bottom: 0;
+  right: 0;
+  border-bottom: 3px solid;
+  border-right: 3px solid;
+  border-radius: 0 0 6px 0;
+}
+
+.es-linea-escaneo {
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--es-curcuma),
+    transparent
+  );
+  animation: es-barrido 2.4s ease-in-out infinite;
+  box-shadow: 0 0 10px var(--es-curcuma);
+}
+@keyframes es-barrido {
+  0%,
+  100% {
+    top: 8%;
+    opacity: 0.3;
+  }
+  50% {
+    top: 88%;
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .es-linea-escaneo {
+    animation: none;
+    top: 50%;
+  }
+}
+
+.es-controles {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.es-boton {
+  padding: 12px 22px;
+  border-radius: 999px;
+  border: none;
+  font-weight: 600;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.es-boton:active {
+  transform: scale(0.97);
+}
+.es-boton-primario {
+  background: var(--es-verde-brillo);
+  color: #0c140f;
+}
+.es-boton-primario:hover {
+  background: #8ce8b3;
+}
+.es-boton-curcuma {
+  background: var(--es-curcuma);
+  color: #1a1200;
+}
+.es-boton-curcuma:hover {
+  background: #efcb7b;
+}
+.es-boton-fantasma {
+  background: rgba(251, 248, 242, 0.08);
+  color: var(--es-papel);
+  border: 1px solid rgba(251, 248, 242, 0.2);
+}
+.es-boton-fantasma:hover {
+  border-color: var(--es-verde-brillo);
+}
+
+.es-mensaje-estado {
+  text-align: center;
+  font-size: 0.85rem;
+  color: rgba(251, 248, 242, 0.6);
+  margin-top: 12px;
+  min-height: 20px;
+}
+
+/* ---------- Búsqueda manual ---------- */
+.es-alternativa {
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px dashed rgba(251, 248, 242, 0.15);
+}
+.es-alternativa label {
+  font-size: 0.82rem;
+  color: rgba(251, 248, 242, 0.6);
+  font-weight: 600;
+}
+.es-fila-busqueda {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.es-input-busqueda {
+  flex: 1;
+  padding: 11px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(251, 248, 242, 0.2);
+  background: rgba(251, 248, 242, 0.06);
+  color: var(--es-papel);
+  font-family: 'Work Sans', sans-serif;
+  font-size: 0.9rem;
+}
+.es-input-busqueda::placeholder {
+  color: rgba(251, 248, 242, 0.4);
+}
+.es-input-busqueda:focus {
+  outline: none;
+  border-color: var(--es-verde-brillo);
+}
+
+/* ---------- Tarjeta de resultado (sube desde abajo) ---------- */
+.es-resultado {
+  margin-top: 22px;
+  background: var(--es-papel);
+  color: var(--es-tinta);
+  border-radius: var(--es-radio);
+  padding: 22px;
+  animation: es-subir 0.3s ease;
+}
+@keyframes es-subir {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .es-resultado {
+    animation: none;
+  }
+}
+
+.es-resultado-vacio {
+  text-align: center;
+  padding: 20px;
+  color: rgba(251, 248, 242, 0.4);
+  font-size: 0.88rem;
+}
+.es-fila-producto {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.es-imagen-producto {
+  width: 58px;
+  height: 58px;
+  border-radius: 12px;
+  background: #efcb7b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.es-imagen-producto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.es-marca-tienda {
+  font-size: 0.75rem;
+  color: var(--es-verde);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.es-nombre-producto {
+  font-family: 'Fraunces', serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--es-tinta);
+}
+.es-precio-grande {
+  font-family: 'Fraunces', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--es-verde);
+}
+.es-meta-producto {
+  font-size: 0.8rem;
+  color: var(--es-tinta-suave);
+  margin-top: 4px;
+}
+
+.es-opcion-coincidencia {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  border: 1px solid var(--es-linea);
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.es-opcion-coincidencia:hover {
+  border-color: var(--es-verde);
+}
+
+.es-similares {
+  margin-top: 22px;
+}
+.es-similares h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.1rem;
+  color: var(--es-papel);
+  margin-bottom: 12px;
+}
+.es-grilla-similares {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+.es-tarjeta-similar {
+  background: var(--es-papel);
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 0.8rem;
+  color: var(--es-tinta);
+}
+.es-tarjeta-similar .precio {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  color: var(--es-verde);
+}

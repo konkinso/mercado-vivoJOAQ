@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mercado Vivo — Productos naturales de Chorrillos</title>
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/landing.css" />
+  </head>
+  <body>
+    <!-- Encabezado Público -->
+    <header class="encabezado">
+      <!-- Botón temporal para probar Realidad Aumentada -->
+      <a
+        href="ar.html"
+        target="_blank"
+        style="
+          position: fixed;
+          top: 10px;
+          right: 10px;
+          z-index: 9999;
+          background: #25d366;
+          color: white;
+          padding: 12px 20px;
+          border-radius: 8px;
+          font-weight: bold;
+          text-decoration: none;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        "
+      >
+        📱 Abrir Visor AR
+      </a>
+      <a href="index.html" class="marca marca-animada">
+        <div class="barra-codigo">
+          <span style="height: 10px"></span><span style="height: 22px"></span>
+          <span style="height: 14px"></span><span style="height: 20px"></span>
+          <span style="height: 8px"></span>
+        </div>
+        Mercado Vivo <span class="punto-vivo"></span>
+      </a>
+      <nav class="nav-acciones">
+        <a href="login.html" class="boton boton-primario">Soy una tienda</a>
+      </nav>
+    </header>
+
+    <!-- Hero / Presentación Comercial -->
+    <section class="hero">
+      <div>
+        <div class="eyebrow">
+          <span class="barra-codigo">
+            <span style="height: 8px"></span><span style="height: 14px"></span>
+            <span style="height: 6px"></span>
+          </span>
+          Productos naturales · Chorrillos y alrededores
+        </div>
+        <h1>Un sistema tecnologico para tiendas</h1>
+        <p class="lead">
+          Bionaturista, Forza Natural, Fitosana y decenas de marcas más
+          reconocidas, todas en un mismo lugar. Busca un producto, compara
+          precios, y escanéalo con tu cámara para ver su ficha al instante con
+          la experencia sensasional.
+        </p>
+        <div class="hero-cta">
+          <a href="#directorio" class="boton boton-curcuma">Ver tiendas</a>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="carrusel-demo">
+          <div class="carousel-track" id="carousel-track">
+            <div class="card activa" data-index="0">
+              <img src="imagenes/eficlax.jpg" alt="Producto Eficlax" />
+            </div>
+
+            <div class="card siguiente" data-index="1">
+              <img
+                src="imagenes/forzaPaginaWeb.jpg"
+                alt="Producto Forza Natural"
+              />
+            </div>
+
+            <div class="card oculta" data-index="2">
+              <img src="imagenes/omega3.jpg" alt="Omega 3" />
+            </div>
+
+            <div class="card oculta" data-index="3">
+              <img
+                src="imagenes/vinagreManzanaLitroFitosana.jpg"
+                alt="Vinagre de manzana Fitosana"
+              />
+            </div>
+
+            <div class="card oculta" data-index="4">
+              <img
+                src="imagenes/CitratoDeMagnesio.jpg"
+                alt="Producto natural"
+              />
+            </div>
+          </div>
+
+          <button
+            class="nav-arrow left"
+            id="flecha-anterior"
+            type="button"
+            aria-label="Producto anterior"
+          >
+            ‹
+          </button>
+
+          <button
+            class="nav-arrow right"
+            id="flecha-siguiente"
+            type="button"
+            aria-label="Producto siguiente"
+          >
+            ›
+          </button>
+
+          <div class="dots" id="dots-carrusel">
+            <div class="dot active" data-index="0"></div>
+            <div class="dot" data-index="1"></div>
+            <div class="dot" data-index="2"></div>
+            <div class="dot" data-index="3"></div>
+            <div class="dot" data-index="4"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Directorio Público de Tiendas -->
+    <section class="seccion" id="directorio">
+      <div class="seccion-titulo">
+        <div>
+          <h2>Tiendas en el directorio</h2>
+          <p>
+            Cada tienda tiene su propio catálogo y su propio dueño detrás —
+            nosotros solo las conectamos.
+          </p>
+        </div>
+        <input
+          class="campo-buscar"
+          id="buscador-tiendas"
+          type="text"
+          placeholder="Buscar tienda o rubro…"
+          style="max-width: 280px"
+        />
+      </div>
+
+      <div class="grilla-tiendas" id="grilla-tiendas">
+        <p class="estado-vacio">Cargando tiendas…</p>
+      </div>
+    </section>
+
+    <!-- Beneficios del Sistema -->
+    <section class="seccion franja-oscura">
+      <div class="seccion-titulo">
+        <div>
+          <h2 style="color: var(--papel)">
+            Por qué esto no es una página web más
+          </h2>
+        </div>
+      </div>
+      <div class="grilla-features">
+        <div class="feature">
+          <div class="marcador">01</div>
+          <h3>Escáner de código de barras</h3>
+          <p>
+            El cliente o el vendedor escanean el producto físico con la cámara
+            del celular y la ficha con precio se abre al instante — sin apps,
+            sin fricción.
+          </p>
+        </div>
+        <div class="feature">
+          <div class="marcador">02</div>
+          <h3>Comparar entre tiendas</h3>
+          <p>
+            Un mismo tipo de producto (ej. colágeno) puede existir en varias
+            tiendas del directorio — el cliente ve todas las opciones cercanas.
+          </p>
+        </div>
+        <div class="feature">
+          <div class="marcador">03</div>
+          <h3>Panel propio por tienda</h3>
+          <p>
+            Cada negocio administra sus productos, precios y stock desde su
+            propio panel, sin tocar el de nadie más.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Oferta para Dueños de Tienda -->
+    <section class="seccion">
+      <div class="seccion-titulo">
+        <div>
+          <h2>Para tiendas: súmate al directorio</h2>
+          <p>Un precio simple, mensual, sin letra pequeña.</p>
+        </div>
+      </div>
+      <div class="tarjeta-precio">
+        <div class="monto">S/20<span> / mes</span></div>
+        <ul class="lista-incluye">
+          <li>Tu propia página dentro del directorio</li>
+          <li>Panel para administrar productos y precios</li>
+          <li>Tus productos aparecen en el escáner de código de barras</li>
+          <li>Visible para cualquiera con el link — sin apps</li>
+        </ul>
+        <a
+          href="login.html"
+          class="boton boton-primario"
+          style="width: 100%; justify-content: center"
+          >Quiero mi tienda aquí</a
+        >
+      </div>
+    </section>
+
+    <!-- Pie de página -->
+    <footer class="pie-pagina">
+      <span>Mercado Vivo — directorio de tiendas naturales</span>
+      <span>Hecho en Chorrillos, Lima</span>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

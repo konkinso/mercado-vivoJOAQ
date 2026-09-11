@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel general — Mercado Vivo</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/superadmin.css" />
+  </head>
+  <body class="superadmin">
+    <aside class="sa-sidebar">
+      <div class="sa-sidebar-marca">
+        <span class="punto-vivo"></span>
+        Mercado Vivo
+      </div>
+
+      <nav class="sa-nav">
+        <button class="sa-nav-item activo" data-vista="vista-dashboard">
+          <span class="icono">📊</span> Dashboard
+        </button>
+        <button class="sa-nav-item" data-vista="vista-solicitudes">
+          <span class="icono">📥</span> Solicitudes
+          <span class="badge" id="badge-solicitudes" style="display: none"
+            >0</span
+          >
+        </button>
+        <button class="sa-nav-item" data-vista="vista-tiendas">
+          <span class="icono">🏬</span> Tiendas
+        </button>
+        <button class="sa-nav-item" data-vista="vista-crear">
+          <span class="icono">➕</span> Crear tienda
+        </button>
+        <button class="sa-nav-item" data-vista="vista-auditoria">
+          <span class="icono">🕓</span> Historial
+        </button>
+      </nav>
+
+      <div class="sa-sidebar-pie">
+        <button onclick="cerrarSesion()">Cerrar sesión</button>
+      </div>
+    </aside>
+
+    <main class="sa-main">
+      <div id="aviso-acceso" style="display: none">
+        <p class="sa-vacio">No tienes acceso a este panel.</p>
+      </div>
+
+      <div id="contenido-superadmin" style="display: none">
+        <!-- ---------- DASHBOARD ---------- -->
+        <section class="sa-seccion-vista visible" id="vista-dashboard">
+          <h1 class="sa-titulo">Dashboard</h1>
+          <p class="sa-subtitulo">
+            Vista general del estado de todas las tiendas.
+          </p>
+
+          <div class="sa-metricas">
+            <div
+              class="sa-tarjeta-metrica sa-metrica-clic"
+              onclick="irAVista('vista-tiendas')"
+            >
+              <div class="numero" id="total-tiendas">—</div>
+              <div class="etiqueta">Tiendas totales</div>
+            </div>
+            <div
+              class="sa-tarjeta-metrica sa-metrica-clic"
+              onclick="irAVistaConFiltro('activo')"
+            >
+              <div class="numero">
+                <span class="indicador-pulso"></span>
+                <span id="total-activas">—</span>
+              </div>
+              <div class="etiqueta">Activas</div>
+            </div>
+            <div
+              class="sa-tarjeta-metrica sa-metrica-clic"
+              onclick="irAVista('vista-solicitudes')"
+            >
+              <div class="numero" id="total-pendientes">—</div>
+              <div class="etiqueta">Pendientes de aprobar</div>
+            </div>
+            <div
+              class="sa-tarjeta-metrica sa-metrica-clic"
+              onclick="irAVistaConFiltro('activo')"
+            >
+              <div class="numero" id="ingreso-mensual">—</div>
+              <div class="etiqueta">Ingreso mensual (activas × S/20)</div>
+            </div>
+          </div>
+
+          <div class="sa-aviso" id="aviso-solicitudes" style="display: none">
+            <p>
+              <strong id="numero-solicitudes-aviso">0</strong> solicitudes
+              nuevas esperando aprobación
+            </p>
+            <button class="sa-boton" onclick="irAVista('vista-solicitudes')">
+              Revisar →
+            </button>
+          </div>
+
+          <div
+            class="sa-aviso"
+            id="aviso-vencidos"
+            style="
+              display: none;
+              background: linear-gradient(
+                90deg,
+                rgba(196, 99, 90, 0.16),
+                rgba(196, 99, 90, 0.04)
+              );
+              border-color: rgba(196, 99, 90, 0.45);
+            "
+          >
+            <p>
+              <strong id="numero-vencidos-aviso" style="color: var(--sa-rojo)"
+                >0</strong
+              >
+              tiendas con pago vencido (+30 días)
+            </p>
+            <button class="sa-boton" onclick="irAVista('vista-tiendas')">
+              Revisar →
+            </button>
+          </div>
+        </section>
+
+        <!-- ---------- SOLICITUDES ---------- -->
+        <section class="sa-seccion-vista" id="vista-solicitudes">
+          <h1 class="sa-titulo">Solicitudes pendientes</h1>
+          <p class="sa-subtitulo">Tiendas esperando tu aprobación.</p>
+          <div id="lista-solicitudes"><p class="sa-vacio">Cargando…</p></div>
+        </section>
+
+        <!-- ---------- TIENDAS ---------- -->
+        <section class="sa-seccion-vista" id="vista-tiendas">
+          <h1 class="sa-titulo">Todas las tiendas</h1>
+          <p class="sa-subtitulo">
+            Activa, suspende, edita o revisa cada tienda.
+          </p>
+
+          <div class="sa-barra-tabla">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap">
+              <button class="sa-boton sa-filtro activo" data-filtro="todos">
+                Todos
+              </button>
+              <button class="sa-boton sa-filtro" data-filtro="activo">
+                Activas
+              </button>
+              <button class="sa-boton sa-filtro" data-filtro="pendiente">
+                Pendientes
+              </button>
+              <button class="sa-boton sa-filtro" data-filtro="suspendido">
+                Suspendidas
+              </button>
+            </div>
+            <div style="display: flex; gap: 8px">
+              <input
+                class="sa-buscador"
+                id="buscador-tiendas"
+                type="text"
+                placeholder="Buscar tienda…"
+              />
+              <button class="sa-boton" onclick="exportarExcel()">
+                ⬇ Exportar Excel
+              </button>
+            </div>
+          </div>
+
+          <table class="sa-tabla">
+            <thead>
+              <tr>
+                <th>Tienda</th>
+                <th>Estado</th>
+                <th>Último pago</th>
+                <th>Acceso</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="cuerpo-tabla-tiendas">
+              <tr>
+                <td colspan="5" class="sa-vacio">Cargando tiendas…</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- ---------- CREAR TIENDA ---------- -->
+        <section class="sa-seccion-vista" id="vista-crear">
+          <h1 class="sa-titulo">Crear tienda y usuario</h1>
+          <p class="sa-subtitulo">
+            Genera el acceso de una nueva tienda al directorio.
+          </p>
+          <div class="sa-tarjeta-form sa-tarjeta-form-ancha">
+            <form id="form-nueva-tienda">
+              <div class="sa-campo">
+                <label>Nombre de la tienda</label>
+                <input
+                  type="text"
+                  id="nueva-nombre"
+                  required
+                  placeholder="Ej. Bionaturista"
+                />
+              </div>
+
+              <div
+                class="sa-tarjeta-links"
+                id="tarjeta-links-generados"
+                style="display: none"
+              >
+                <div class="sa-fila-link">
+                  <div>
+                    <div class="sa-etiqueta-link">
+                      Link de acceso (panel de administración)
+                    </div>
+                    <div class="sa-valor-link" id="link-acceso-generado">—</div>
+                  </div>
+                  <button
+                    type="button"
+                    class="sa-boton-copiar"
+                    data-copiar="link-acceso-generado"
+                  >
+                    📋 Copiar
+                  </button>
+                </div>
+                <div class="sa-fila-link">
+                  <div>
+                    <div class="sa-etiqueta-link">
+                      Link público (catálogo para sus clientes)
+                    </div>
+                    <div class="sa-valor-link" id="link-publico-generado">
+                      —
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    class="sa-boton-copiar"
+                    data-copiar="link-publico-generado"
+                  >
+                    📋 Copiar
+                  </button>
+                </div>
+              </div>
+
+              <div class="sa-campo">
+                <label>Rubro</label>
+                <select id="nueva-rubro">
+                  <option value="">Selecciona un rubro…</option>
+                  <option value="Extractos naturales">
+                    Extractos naturales
+                  </option>
+                  <option value="Cápsulas y suplementos">
+                    Cápsulas y suplementos
+                  </option>
+                  <option value="Colágenos">Colágenos</option>
+                  <option value="Productos herbales">Productos herbales</option>
+                  <option value="Harinas y panes naturales">
+                    Harinas y panes naturales
+                  </option>
+                  <option value="Miel y derivados">Miel y derivados</option>
+                  <option value="Aceites naturales">Aceites naturales</option>
+                  <option value="Otro">Otro</option>
+                </select>
+              </div>
+
+              <div class="sa-campo">
+                <label>Teléfono / WhatsApp</label>
+                <div class="sa-fila-telefono">
+                  <span class="sa-prefijo-pais">🇵🇪 +51</span>
+                  <input
+                    type="text"
+                    id="nueva-telefono"
+                    placeholder="9XXXXXXXX"
+                    maxlength="9"
+                    inputmode="numeric"
+                  />
+                </div>
+                <span
+                  class="sa-error-campo"
+                  id="error-telefono"
+                  style="display: none"
+                  >Debe empezar con 9 y tener exactamente 9 dígitos.</span
+                >
+              </div>
+
+              <div class="sa-campo sa-campo-ancho">
+                <label
+                  >Nombre de usuario (se genera solo según el nombre de la
+                  tienda)</label
+                >
+                <div class="sa-fila-clave-generar">
+                  <input
+                    type="text"
+                    id="nueva-correo"
+                    required
+                    placeholder="Escribe el nombre de la tienda arriba…"
+                    class="sa-input-largo sa-input-correo"
+                  />
+                  <button
+                    type="button"
+                    class="sa-boton sa-boton-mini"
+                    id="boton-correo-aleatorio"
+                  >
+                    Generar
+                  </button>
+                </div>
+              </div>
+
+              <div class="sa-campo">
+                <label>Contraseña</label>
+                <div class="sa-fila-clave-generar">
+                  <div class="sa-fila-clave">
+                    <input
+                      type="password"
+                      id="nueva-clave"
+                      placeholder="Mínimo 6 caracteres"
+                      required
+                    />
+                    <button
+                      type="button"
+                      class="sa-icono-ojo"
+                      id="boton-ver-clave"
+                    >
+                      👁
+                    </button>
+                  </div>
+                  <button
+                    type="button"
+                    class="sa-boton sa-boton-mini"
+                    id="boton-clave-aleatoria"
+                  >
+                    Generar
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                class="sa-boton sa-boton-primario"
+                style="width: 100%; justify-content: center; margin-top: 6px"
+              >
+                Crear tienda
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <!-- ---------- HISTORIAL / AUDITORÍA ---------- -->
+        <section class="sa-seccion-vista" id="vista-auditoria">
+          <h1 class="sa-titulo">Historial de acciones</h1>
+          <p class="sa-subtitulo">
+            Registro de cambios de estado sobre las tiendas.
+          </p>
+          <div id="lista-auditoria"><p class="sa-vacio">Cargando…</p></div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Modal: editar tienda -->
+    <div class="sa-modal-fondo" id="modal-editar-tienda">
+      <div class="sa-modal">
+        <h3>Editar tienda</h3>
+        <form id="form-editar-tienda">
+          <input type="hidden" id="editar-tienda-id" />
+          <div class="sa-campo">
+            <label>Nombre</label
+            ><input type="text" id="editar-tienda-nombre" required />
+          </div>
+          <div class="sa-campo">
+            <label>Usuario para iniciar sesión</label>
+            <input
+              type="text"
+              id="editar-tienda-usuario"
+              readonly
+              style="opacity: 0.75; cursor: not-allowed"
+            />
+          </div>
+          <div class="sa-campo">
+            <label>Rubro</label><input type="text" id="editar-tienda-rubro" />
+          </div>
+          <div class="sa-campo">
+            <label>Teléfono / WhatsApp</label
+            ><input type="text" id="editar-tienda-telefono" />
+          </div>
+          <div class="sa-campo">
+            <label>Notas internas (solo tú las ves)</label
+            ><input type="text" id="editar-tienda-notas" />
+          </div>
+          <div class="sa-campo">
+            <label>Fecha de último pago</label
+            ><input type="date" id="editar-tienda-fecha-pago" />
+          </div>
+          <div class="sa-modal-acciones">
+            <button type="submit" class="sa-boton sa-boton-primario">
+              Guardar
+            </button>
+            <button
+              type="button"
+              class="sa-boton"
+              onclick="cerrarModalEditarTienda()"
+            >
+              Cancelar
+            </button>
+          </div>
+          <button
+            type="button"
+            class="sa-boton"
+            style="width: 100%; margin-top: 10px"
+            onclick="resetearClaveTienda()"
+          >
+            Generar nueva contraseña
+          </button>
+          <button
+            type="button"
+            class="sa-boton"
+            style="
+              width: 100%;
+              margin-top: 10px;
+              color: var(--sa-rojo);
+              border-color: var(--sa-rojo);
+            "
+            onclick="eliminarTiendaConfirmado()"
+          >
+            Eliminar tienda permanentemente
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Tarjeta de credenciales tipo "boleta" para capturar y enviar al cliente -->
+    <div class="sa-modal-fondo" id="modal-credenciales">
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+          align-items: center;
+        "
+      >
+        <div class="sa-boleta-credenciales" id="boleta-para-capturar">
+          <div class="sa-boleta-encabezado">
+            <span class="sa-boleta-logo">🌿 Mercado Vivo</span>
+            <span class="sa-boleta-subtitulo"
+              >Datos de acceso de tu tienda</span
+            >
+          </div>
+          <div class="sa-boleta-linea"></div>
+          <div class="sa-boleta-fila">
+            <span>Tienda</span><strong id="boleta-nombre">—</strong>
+          </div>
+          <div class="sa-boleta-fila">
+            <span>Usuario</span
+            ><strong id="boleta-usuario" class="mono">—</strong>
+          </div>
+          <div class="sa-boleta-fila">
+            <span>Contraseña</span
+            ><strong id="boleta-clave" class="mono">—</strong>
+          </div>
+          <div class="sa-boleta-linea"></div>
+          <div class="sa-boleta-fila"><span>Link para ingresar</span></div>
+          <div class="sa-boleta-link mono" id="boleta-link-login">—</div>
+          <div class="sa-boleta-fila" style="margin-top: 8px">
+            <span>Tu catálogo público</span>
+          </div>
+          <div class="sa-boleta-link mono" id="boleta-link-publico">—</div>
+          <div class="sa-boleta-pie">
+            Guarda esta información en un lugar seguro.
+          </div>
+        </div>
+        <div class="sa-modal-acciones-boleta">
+          <button
+            type="button"
+            class="sa-boton sa-boton-primario"
+            id="boton-descargar-boleta"
+          >
+            📷 Descargar imagen
+          </button>
+          <button
+            type="button"
+            class="sa-boton"
+            id="boton-enviar-boleta-wsp"
+            style="background: #25d366; border-color: #25d366; color: #0c140f"
+          >
+            💬 Enviar por WhatsApp
+          </button>
+        </div>
+        <button
+          type="button"
+          class="sa-boton"
+          onclick="cerrarModalCredenciales()"
+          style="margin-top: 10px; width: 100%"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="config.js"></script>
+    <script src="superadmin.js"></script>
+  </body>
+</html>

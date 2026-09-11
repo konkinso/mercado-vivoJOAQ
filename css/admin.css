@@ -1,0 +1,414 @@
+/* ============================================
+   MERCADO VIVO — css/admin.css
+   Identidad de esta vista: "libreta de bodega / boleta".
+   Papel claro, tinta oscura, acento óxido para precios y
+   acciones, monoespaciada para cifras y códigos.
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+
+:root {
+  --ad-papel: #fbf8f2;
+  --ad-papel-carta: #ffffff;
+  --ad-tinta: #2b2620;
+  --ad-tinta-suave: #71685c;
+  --ad-linea: #e4ddce;
+  --ad-oxido: #b4532a;
+  --ad-oxido-suave: #f1dacb;
+  --ad-verde: #5b7f62;
+  --ad-verde-suave: #dce8dd;
+  --ad-ambar: #c9a227;
+  --ad-ambar-suave: #f2e6be;
+  --ad-radio: 12px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body.admin-tienda {
+  background: var(--ad-papel);
+  color: var(--ad-tinta);
+  font-family: 'Work Sans', sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+}
+
+.mono {
+  font-family: 'DM Mono', monospace;
+}
+
+/* ---------- Barra lateral ---------- */
+.ad-sidebar {
+  width: 230px;
+  flex-shrink: 0;
+  background: var(--ad-papel-carta);
+  border-right: 1px dashed var(--ad-linea);
+  min-height: 100vh;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 22px 0;
+}
+.ad-sidebar-marca {
+  padding: 0 20px 18px;
+  border-bottom: 1px dashed var(--ad-linea);
+  margin-bottom: 14px;
+}
+.ad-sidebar-marca .tienda-nombre {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--ad-tinta);
+}
+.ad-sidebar-marca .marca-sub {
+  font-size: 0.75rem;
+  color: var(--ad-tinta-suave);
+  margin-top: 2px;
+}
+
+.ad-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 12px;
+  flex: 1;
+}
+.ad-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: 8px;
+  color: var(--ad-tinta-suave);
+  font-size: 0.92rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  text-align: left;
+  width: 100%;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.ad-nav-item:hover {
+  background: var(--ad-oxido-suave);
+  color: var(--ad-tinta);
+}
+.ad-nav-item.activo {
+  background: var(--ad-oxido);
+  color: #fff;
+  font-weight: 600;
+}
+.ad-nav-item .icono {
+  font-size: 1.05rem;
+  width: 20px;
+  text-align: center;
+}
+
+.ad-sidebar-pie {
+  padding: 14px 20px 0;
+  border-top: 1px dashed var(--ad-linea);
+  margin-top: 14px;
+}
+.ad-sidebar-pie a,
+.ad-sidebar-pie button {
+  display: block;
+  width: 100%;
+  padding: 9px 0;
+  background: transparent;
+  border: 1px solid var(--ad-linea);
+  border-radius: 8px;
+  color: var(--ad-tinta-suave);
+  font-family: 'Work Sans', sans-serif;
+  font-size: 0.83rem;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  margin-bottom: 8px;
+}
+.ad-sidebar-pie a:hover,
+.ad-sidebar-pie button:hover {
+  border-color: var(--ad-oxido);
+  color: var(--ad-oxido);
+}
+
+/* ---------- Contenido ---------- */
+.ad-main {
+  flex: 1;
+  padding: 30px clamp(18px, 4vw, 44px) 80px;
+  max-width: 1180px;
+}
+.ad-vista {
+  display: none;
+}
+.ad-vista.visible {
+  display: block;
+}
+
+.ad-titulo {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 1.6rem;
+  margin: 0 0 4px;
+}
+.ad-subtitulo {
+  color: var(--ad-tinta-suave);
+  font-size: 0.92rem;
+  margin: 0 0 24px;
+}
+
+.ad-boton {
+  padding: 9px 18px;
+  border-radius: 999px;
+  border: 1.5px solid var(--ad-linea);
+  background: transparent;
+  color: var(--ad-tinta);
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 600;
+  font-size: 0.87rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+.ad-boton:hover {
+  border-color: var(--ad-oxido);
+}
+.ad-boton-primario {
+  background: var(--ad-oxido);
+  border-color: var(--ad-oxido);
+  color: #fff;
+}
+.ad-boton-primario:hover {
+  background: #9a421f;
+  border-color: #9a421f;
+}
+
+/* ---------- Ticket de estado (como boleta) ---------- */
+.ad-ticket-estado {
+  background: var(--ad-papel-carta);
+  border: 1px dashed var(--ad-linea);
+  border-radius: var(--ad-radio);
+  padding: 18px 20px;
+  margin-bottom: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ad-etiqueta-estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.ad-etiqueta-estado.activo {
+  background: var(--ad-verde-suave);
+  color: var(--ad-verde);
+}
+.ad-etiqueta-estado.pendiente {
+  background: var(--ad-ambar-suave);
+  color: #7a5f0f;
+}
+.ad-etiqueta-estado.suspendido {
+  background: #f3d2d2;
+  color: #7a1e1e;
+}
+
+/* ---------- Métricas ---------- */
+.ad-metricas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 14px;
+  margin-bottom: 26px;
+}
+.ad-tarjeta-metrica {
+  background: var(--ad-papel-carta);
+  border: 1px solid var(--ad-linea);
+  border-radius: var(--ad-radio);
+  padding: 18px;
+}
+.ad-tarjeta-metrica .numero {
+  font-family: 'DM Mono', monospace;
+  font-size: 1.7rem;
+  font-weight: 500;
+  color: var(--ad-tinta);
+}
+.ad-tarjeta-metrica .etiqueta {
+  font-size: 0.8rem;
+  color: var(--ad-tinta-suave);
+  margin-top: 4px;
+}
+
+/* ---------- Productos estrella / hueso ---------- */
+.ad-doble-columna {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.ad-lista-destacados {
+  background: var(--ad-papel-carta);
+  border: 1px solid var(--ad-linea);
+  border-radius: var(--ad-radio);
+  padding: 18px 20px;
+}
+.ad-lista-destacados h3 {
+  font-size: 0.95rem;
+  margin: 0 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ad-item-destacado {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--ad-linea);
+  font-size: 0.88rem;
+}
+.ad-item-destacado:last-child {
+  border-bottom: none;
+}
+.ad-item-destacado .precio {
+  font-family: 'DM Mono', monospace;
+  color: var(--ad-oxido);
+}
+@media (max-width: 700px) {
+  .ad-doble-columna {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Link público (como sello de boleta) ---------- */
+.ad-tarjeta-link {
+  background: var(--ad-papel-carta);
+  border: 1px dashed var(--ad-linea);
+  border-radius: var(--ad-radio);
+  padding: 16px 20px;
+  margin-bottom: 26px;
+}
+.ad-tarjeta-link .etiqueta {
+  font-size: 0.8rem;
+  color: var(--ad-tinta-suave);
+  margin-bottom: 6px;
+}
+.ad-tarjeta-link a {
+  font-family: 'DM Mono', monospace;
+  color: var(--ad-oxido);
+  font-weight: 500;
+  word-break: break-all;
+  text-decoration: none;
+}
+
+/* ---------- Barra de herramientas + formulario producto ---------- */
+.ad-form-producto {
+  background: var(--ad-papel-carta);
+  border: 1px solid var(--ad-linea);
+  border-radius: var(--ad-radio);
+  padding: 20px;
+  margin-bottom: 26px;
+}
+.ad-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.ad-campo label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ad-tinta-suave);
+}
+.ad-campo input {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--ad-linea);
+  background: var(--ad-papel);
+  color: var(--ad-tinta);
+  font-family: 'Work Sans', sans-serif;
+  font-size: 0.92rem;
+}
+.ad-campo input:focus {
+  outline: none;
+  border-color: var(--ad-oxido);
+}
+.ad-campo-codigo-fila {
+  display: flex;
+  gap: 8px;
+}
+
+/* ---------- Tabla de productos (ticket look) ---------- */
+.ad-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--ad-papel-carta);
+  border: 1px solid var(--ad-linea);
+  border-radius: var(--ad-radio);
+  overflow: hidden;
+}
+.ad-tabla th,
+.ad-tabla td {
+  text-align: left;
+  padding: 13px 16px;
+  border-bottom: 1px dashed var(--ad-linea);
+  font-size: 0.9rem;
+}
+.ad-tabla th {
+  background: var(--ad-papel);
+  font-weight: 600;
+  color: var(--ad-tinta-suave);
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+.ad-tabla tr:last-child td {
+  border-bottom: none;
+}
+.ad-tabla .precio-celda {
+  font-family: 'DM Mono', monospace;
+  color: var(--ad-oxido);
+  font-weight: 500;
+}
+
+.ad-vacio {
+  text-align: center;
+  padding: 36px 20px;
+  color: var(--ad-tinta-suave);
+}
+
+@media (max-width: 860px) {
+  body.admin-tienda {
+    flex-direction: column;
+  }
+  .ad-sidebar {
+    width: 100%;
+    min-height: auto;
+    position: relative;
+    flex-direction: row;
+    align-items: center;
+    overflow-x: auto;
+    padding: 12px;
+  }
+  .ad-sidebar-marca {
+    border-bottom: none;
+    padding: 0 12px;
+    margin-bottom: 0;
+  }
+  .ad-nav {
+    flex-direction: row;
+    padding: 0;
+  }
+  .ad-sidebar-pie {
+    display: none;
+  }
+  .ad-tabla {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
