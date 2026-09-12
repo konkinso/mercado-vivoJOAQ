@@ -3,52 +3,163 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>Visor AR — Mercado Vivo</title>
+    <title>Visor AR — Citrato de Magnesio Bionaturista</title>
+    <!-- Librerías A-Frame y AR.js -->
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
     <style>
-      body { margin: 0; overflow: hidden; font-family: system-ui, sans-serif; background: #000; }
+      body {
+        margin: 0;
+        overflow: hidden;
+        font-family: system-ui, sans-serif;
+        background: #000;
+      }
+
+      /* Pantalla inicial obligatoria para activar la cámara en iPhone Safari */
       #pantalla-inicio {
-        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-        background: #0f172a; z-index: 99999; display: flex; flex-direction: column;
-        justify-content: center; align-items: center; color: white; text-align: center; padding: 20px;
+        position: fixed;
+        top: 0; left: 0; width: 100vw; height: 100vh;
+        background: #0f172a;
+        z-index: 99999;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        box-sizing: border-box;
       }
+
       .btn-activar {
-        background: #25d366; color: white; border: none; padding: 16px 32px;
-        font-size: 18px; font-weight: bold; border-radius: 30px; cursor: pointer;
+        background: #25d366;
+        color: white;
+        border: none;
+        padding: 16px 32px;
+        font-size: 18px;
+        font-weight: bold;
+        border-radius: 30px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+        margin-top: 20px;
       }
+
+      /* HUD Flotante */
       .hud-ar {
-        position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
-        z-index: 1000; background: rgba(15, 23, 42, 0.9); color: #ffffff;
-        padding: 12px 20px; border-radius: 20px; text-align: center; border: 2px solid #0099ff;
+        position: fixed;
+        bottom: 25px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        background: rgba(15, 23, 42, 0.9);
+        color: #ffffff;
+        padding: 14px 24px;
+        border-radius: 20px;
+        text-align: center;
+        border: 2px solid #0099ff;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        min-width: 270px;
+      }
+      .hud-ar h3 {
+        margin: 0 0 4px 0;
+        font-size: 16px;
+        color: #0099ff;
+      }
+      .hud-ar p {
+        margin: 0;
+        font-size: 13px;
+        opacity: 0.9;
+      }
+      .hud-ar .precio {
+        font-weight: bold;
+        color: #25d366;
+        font-size: 15px;
+        margin-top: 4px;
+      }
+
+      .btn-volver {
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 1000;
+        background: #ffffff;
+        color: #000;
+        padding: 8px 16px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 13px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
       }
     </style>
   </head>
   <body>
 
+    <!-- Overlay de interacción para Safari iOS -->
     <div id="pantalla-inicio">
       <h2>🍃 Mercado Vivo AR</h2>
-      <p>Apunta al marcador Hiro tras activar la cámara.</p>
+      <p>Presiona el botón para activar la cámara y escanear el producto.</p>
       <button class="btn-activar" onclick="activarCamara()">📷 Iniciar Cámara AR</button>
     </div>
 
+    <a href="index.html" class="btn-volver">← Volver al Menú</a>
+
+    <!-- Interfaz informativa por encima de la cámara -->
     <div class="hud-ar">
-      <h3 style="margin:0; color:#0099ff;">💊 Citrato de Magnesio</h3>
-      <p style="margin:0; font-size:12px;">Bionaturista · 100 Unidades</p>
-      <div style="font-weight:bold; color:#25d366; margin-top:3px;">S/ 45.00</div>
+      <h3>💊 Citrato de Magnesio</h3>
+      <p>Bionaturista · 100 Unidades (300mg)</p>
+      <div class="precio">S/ 45.00</div>
     </div>
 
+    <!-- Escena AR interactiva -->
     <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
+      <!-- Cargar la imagen local con soporte CORS -->
+      <a-assets>
+        <img id="etiqueta-frasco" src="imagenes/CitratoDeMagnesio.jpg" crossorigin="anonymous" />
+      </a-assets>
+
+      <!-- Detector del Marcador Hiro -->
       <a-marker preset="hiro">
-        <!-- Cilindro 3D con color visible de respaldo y rotación -->
-        <a-cylinder 
-          position="0 0.8 0" 
-          radius="0.45" 
-          height="1.3" 
-          color="#00a896"
-          animation="property: rotation; to: 0 360 0; loop: true; dur: 7000; easing: linear">
-          <a-cylinder position="0 0.68 0" radius="0.42" height="0.2" color="#FFFFFF"></a-cylinder>
+        <!-- Frasco en 3D -->
+        <a-cylinder
+          position="0 0.8 0"
+          radius="0.45"
+          height="1.3"
+          src="#etiqueta-frasco"
+          animation="property: rotation; to: 0 360 0; loop: true; dur: 7000; easing: linear"
+          animation__flotar="property: position; to: 0 1.1 0; dir: alternate; loop: true; dur: 1500; easing: sine"
+        >
+          <!-- Tapa blanca del frasco -->
+          <a-cylinder
+            position="0 0.68 0"
+            radius="0.42"
+            height="0.2"
+            color="#FFFFFF"
+          >
+          </a-cylinder>
+
+          <!-- Ficha con Precio flotando -->
+          <a-text
+            value="BIONATURISTA\nS/ 45.00"
+            align="center"
+            position="0 0.9 0"
+            scale="0.8 0.8 0.8"
+            color="#0099ff"
+            font="kelsonsans"
+          >
+          </a-text>
         </a-cylinder>
+
+        <!-- Sombra en la base -->
+        <a-ring
+          position="0 0 0"
+          rotation="-90 0 0"
+          radius-inner="0.1"
+          radius-outer="0.7"
+          color="#000000"
+          opacity="0.4"
+        >
+        </a-ring>
       </a-marker>
 
       <a-entity camera></a-entity>
@@ -61,7 +172,7 @@
             document.getElementById('pantalla-inicio').style.display = 'none';
           })
           .catch(function(err) {
-            alert('Habilita los permisos de cámara en Safari.');
+            alert('Por favor habilita los permisos de cámara en Safari.');
           });
       }
     </script>
