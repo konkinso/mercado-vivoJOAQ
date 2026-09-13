@@ -38,18 +38,24 @@
 </model-viewer>
 
 <script>
-  const visor = document.getElementById('visor');
-
-  visor.addEventListener('load', async () => {
-    try {
-      const material = visor.model.materials[0];
-      const textura = await visor.createTexture('imagenes/forza9en1.jpg');
-      material.pbrMetallicRoughness.baseColorTexture.setTexture(textura);
-    } catch (err) {
-      console.error('No se pudo aplicar la textura:', err);
-    }
-  });
-</script>
+    const visor = document.getElementById('visor');
+  
+    visor.addEventListener('load', async () => {
+      console.log('Modelo cargado. Materiales:', visor.model.materials.length);
+      visor.model.materials.forEach((m, i) => console.log(`Material ${i}:`, m.name));
+  
+      try {
+        const material = visor.model.materials[0];
+        console.log('Intentando cargar textura...');
+        const textura = await visor.createTexture('imagenes/forza9en1.jpg');
+        console.log('Textura cargada correctamente:', textura);
+        material.pbrMetallicRoughness.baseColorTexture.setTexture(textura);
+        console.log('Textura aplicada.');
+      } catch (err) {
+        console.error('ERROR al aplicar la textura:', err);
+      }
+    });
+  </script>
 
 </body>
 </html>
