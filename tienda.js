@@ -11,29 +11,18 @@ let CARRITO = []; // { id, nombre, precio, cantidad }
 
 // ---------- Cargar tienda y productos ----------
 async function cargarTienda() {
-  if (!slugTienda) {
-    document.getElementById('nombre-tienda').textContent =
-      'Tienda no especificada';
-    return;
-  }
+  if (!slugTienda) { document.getElementById('nombre-tienda').textContent = 'Tienda no especificada'; return; }
 
   try {
     const { data: tienda, error: errorTienda } = await supabaseClient
-      .from('tiendas')
-      .select('id, nombre, rubro, slug, telefono')
-      .eq('slug', slugTienda)
-      .single();
+      .from('tiendas').select('id, nombre, rubro, slug, telefono').eq('slug', slugTienda).single();
 
-    if (errorTienda || !tienda)
-      throw errorTienda || new Error('Tienda no encontrada');
+    if (errorTienda || !tienda) throw errorTienda || new Error('Tienda no encontrada');
     TIENDA_INFO = tienda;
 
     document.getElementById('nombre-tienda').textContent = tienda.nombre;
-    document.getElementById('rubro-tienda').textContent =
-      tienda.rubro || 'Productos naturales';
-    document.getElementById('sello-tienda').textContent = tienda.nombre
-      .charAt(0)
-      .toUpperCase();
+    document.getElementById('rubro-tienda').textContent = tienda.rubro || 'Productos naturales';
+    document.getElementById('sello-tienda').textContent = tienda.nombre.charAt(0).toUpperCase();
     document.getElementById('miga-tienda').textContent = tienda.nombre;
     document.title = `${tienda.nombre} — Mercado Vivo`;
 
@@ -41,8 +30,7 @@ async function cargarTienda() {
     cargarCarritoDesdeMemoria();
   } catch (err) {
     console.error('Error cargando tienda:', err);
-    document.getElementById('nombre-tienda').textContent =
-      'No se encontró esta tienda';
+    document.getElementById('nombre-tienda').textContent = 'No se encontró esta tienda';
   }
 }
 
@@ -50,10 +38,8 @@ async function cargarProductos(tiendaId) {
   const contenedor = document.getElementById('grilla-productos');
   try {
     const { data, error } = await supabaseClient
-      .from('productos')
-      .select('id, nombre, precio, categoria, icono, imagen_url, stock')
-      .eq('tienda_id', tiendaId)
-      .order('nombre', { ascending: true });
+      .from('productos').select('id, nombre, precio, categoria, icono, imagen_url, stock, ar_habilitado, plantillas_ar(archivo_glb)')
+      .eq('tienda_id', tiendaId).order('nombre', { ascending: true });
 
     if (error) throw error;
     TODOS_LOS_PRODUCTOS = data || [];
@@ -66,63 +52,94 @@ async function cargarProductos(tiendaId) {
 
 function renderizarProductos(lista) {
   const contenedor = document.getElementById('grilla-productos');
-  if (!lista.length) {
-    contenedor.innerHTML = `<p class="tv-vacio">Esta tienda todavía no tiene productos cargados.</p>`;
-    return;
-  }
+  if (!lista.length) { contenedor.innerHTML = `<p class="tv-vacio">Esta tienda todavía no tiene productos cargados.</p>`; return; }
 
-  contenedor.innerHTML = lista
-    .map((p) => {
-      const sinStock =
-        p.stock !== null && p.stock !== undefined && p.stock <= 0;
-      const imagen = p.imagen_url
-        ? `<img src="${p.imagen_url}" alt="${p.nombre}">`
-        : p.icono || '🌿';
+  contenedor.innerHTML = lista.map(p => {
+    const sinStock = p.stock !== null && p.stock !== undefined && p.stock <= 0;
+    const imagen = p.imagen_url
+      ? `<img src="${p.imagen_url}" alt="${p.nombre}">`
+      : (p.icono || '🌿');
 
-      return `
+    return `
     <div class="tv-tarjeta-producto">
       <div class="tv-imagen-producto">${imagen}</div>
       <div class="tv-cuerpo-producto">
         <div class="tv-marca-producto">${p.categoria || 'Natural'}</div>
         <h3>${p.nombre}</h3>
         ${sinStock ? '<div class="tv-sin-stock">Agotado</div>' : ''}
+        ${p.ar_habilitado && p.imagen_url && p.plantillas_ar ? `<button class="tv-boton-ar" onclick="abrirVisorAR('${p.id}')">📱 Ver en AR</button>` : ''}
         <div class="tv-fila-precio">
           <span class="tv-precio">S/${Number(p.precio).toFixed(2)}</span>
-          ${
-            sinStock
-              ? ''
-              : `<button class="tv-boton-agregar" onclick="agregarAlCarrito('${p.id}')" title="Agregar al carrito">+</button>`
-          }
+          ${sinStock ? '' : `<button class="tv-boton-agregar" onclick="agregarAlCarrito('${p.id}')" title="Agregar al carrito">+</button>`}
         </div>
       </div>
     </div>`;
-    })
-    .join('');
+  }).join('');
 }
+
+// ============================================
+// Visor AR sin marcador (model-viewer) — forma genérica + foto real como textura
+// ============================================
+async function abrirVisorAR(productoId) {
+  const producto = TODOS_LOS_PRODUCTOS.find(p => p.id === productoId);
+  if (!producto || !producto.imagen_url) return;
+
+  // Crea el modal si no existe
+  let modal = document.getElementById('modal-visor-ar');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'modal-visor-ar';
+    modal.className = 'tv-modal-ar';
+    modal.innerHTML = `
+      <button class="tv-cerrar-ar" onclick="cerrarVisorAR()">✕</button>
+      <model-viewer id="visor-ar-elemento" ar ar-modes="webxr scene-viewer quick-look" camera-controls auto-rotate shadow-intensity="1">
+        <button slot="ar-button" class="tv-boton-ar-activar">📱 Ver en tu espacio</button>
+      </model-viewer>
+      <div class="tv-nombre-ar" id="nombre-producto-ar"></div>
+    `;
+    document.body.appendChild(modal);
+  }
+
+  document.getElementById('nombre-producto-ar').textContent = producto.nombre;
+  modal.classList.add('abierto');
+
+  const visor = document.getElementById('visor-ar-elemento');
+  visor.src = producto.plantillas_ar.archivo_glb;
+
+  // Cuando el modelo cargue, reemplazamos su textura por la FOTO REAL del producto
+  visor.addEventListener('load', async () => {
+    try {
+      const material = visor.model.materials[0];
+      const textura = await visor.createTexture(producto.imagen_url);
+      material.pbrMetallicRoughness.baseColorTexture.setTexture(textura);
+    } catch (err) {
+      console.error('No se pudo aplicar la textura real:', err);
+    }
+  }, { once: true });
+}
+window.abrirVisorAR = abrirVisorAR;
+
+function cerrarVisorAR() {
+  const modal = document.getElementById('modal-visor-ar');
+  if (modal) modal.classList.remove('abierto');
+}
+window.cerrarVisorAR = cerrarVisorAR;
 
 document.getElementById('buscador-productos').addEventListener('input', (e) => {
   const texto = e.target.value.toLowerCase();
-  renderizarProductos(
-    TODOS_LOS_PRODUCTOS.filter((p) => p.nombre.toLowerCase().includes(texto))
-  );
+  renderizarProductos(TODOS_LOS_PRODUCTOS.filter(p => p.nombre.toLowerCase().includes(texto)));
 });
 
 // ============================================
 // Carrito de compras
 // ============================================
 function agregarAlCarrito(productoId) {
-  const producto = TODOS_LOS_PRODUCTOS.find((p) => p.id === productoId);
+  const producto = TODOS_LOS_PRODUCTOS.find(p => p.id === productoId);
   if (!producto) return;
 
-  const existente = CARRITO.find((i) => i.id === productoId);
+  const existente = CARRITO.find(i => i.id === productoId);
   if (existente) existente.cantidad += 1;
-  else
-    CARRITO.push({
-      id: producto.id,
-      nombre: producto.nombre,
-      precio: producto.precio,
-      cantidad: 1,
-    });
+  else CARRITO.push({ id: producto.id, nombre: producto.nombre, precio: producto.precio, cantidad: 1 });
 
   guardarCarritoEnMemoria();
   pintarCarrito();
@@ -137,17 +154,17 @@ function agregarAlCarrito(productoId) {
 window.agregarAlCarrito = agregarAlCarrito;
 
 function cambiarCantidad(productoId, delta) {
-  const item = CARRITO.find((i) => i.id === productoId);
+  const item = CARRITO.find(i => i.id === productoId);
   if (!item) return;
   item.cantidad += delta;
-  if (item.cantidad <= 0) CARRITO = CARRITO.filter((i) => i.id !== productoId);
+  if (item.cantidad <= 0) CARRITO = CARRITO.filter(i => i.id !== productoId);
   guardarCarritoEnMemoria();
   pintarCarrito();
 }
 window.cambiarCantidad = cambiarCantidad;
 
 function quitarDelCarrito(productoId) {
-  CARRITO = CARRITO.filter((i) => i.id !== productoId);
+  CARRITO = CARRITO.filter(i => i.id !== productoId);
   guardarCarritoEnMemoria();
   pintarCarrito();
 }
@@ -158,10 +175,8 @@ function pintarCarrito() {
   const badge = document.getElementById('badge-carrito');
   const totalCantidad = CARRITO.reduce((s, i) => s + i.cantidad, 0);
 
-  if (totalCantidad > 0) {
-    badge.textContent = totalCantidad;
-    badge.style.display = 'flex';
-  } else badge.style.display = 'none';
+  if (totalCantidad > 0) { badge.textContent = totalCantidad; badge.style.display = 'flex'; }
+  else badge.style.display = 'none';
 
   if (!CARRITO.length) {
     lista.innerHTML = `<p class="tv-vacio">Tu carrito está vacío.</p>`;
@@ -169,8 +184,7 @@ function pintarCarrito() {
     return;
   }
 
-  lista.innerHTML = CARRITO.map(
-    (item) => `
+  lista.innerHTML = CARRITO.map(item => `
     <div class="tv-item-carrito">
       <div class="info">
         <h4>${item.nombre}</h4>
@@ -181,29 +195,17 @@ function pintarCarrito() {
         <span>${item.cantidad}</span>
         <button onclick="cambiarCantidad('${item.id}', 1)">+</button>
       </div>
-      <button class="tv-quitar-item" onclick="quitarDelCarrito('${
-        item.id
-      }')">Quitar</button>
+      <button class="tv-quitar-item" onclick="quitarDelCarrito('${item.id}')">Quitar</button>
     </div>
-  `
-  ).join('');
+  `).join('');
 
   const total = CARRITO.reduce((s, i) => s + i.cantidad * Number(i.precio), 0);
-  document.getElementById('total-carrito').textContent = `S/${total.toFixed(
-    2
-  )}`;
+  document.getElementById('total-carrito').textContent = `S/${total.toFixed(2)}`;
 }
 
 // Persistencia simple en memoria de sesión (no localStorage, para no perder datos entre tiendas distintas se limpia por slug)
-function guardarCarritoEnMemoria() {
-  window._carritoMercadoVivo = window._carritoMercadoVivo || {};
-  window._carritoMercadoVivo[slugTienda] = CARRITO;
-}
-function cargarCarritoDesdeMemoria() {
-  window._carritoMercadoVivo = window._carritoMercadoVivo || {};
-  CARRITO = window._carritoMercadoVivo[slugTienda] || [];
-  pintarCarrito();
-}
+function guardarCarritoEnMemoria() { window._carritoMercadoVivo = window._carritoMercadoVivo || {}; window._carritoMercadoVivo[slugTienda] = CARRITO; }
+function cargarCarritoDesdeMemoria() { window._carritoMercadoVivo = window._carritoMercadoVivo || {}; CARRITO = window._carritoMercadoVivo[slugTienda] || []; pintarCarrito(); }
 
 // ---------- Abrir/cerrar drawer ----------
 function abrirDrawer() {
@@ -215,43 +217,31 @@ function cerrarDrawer() {
   document.getElementById('fondo-drawer').classList.remove('abierto');
 }
 document.getElementById('boton-carrito').addEventListener('click', abrirDrawer);
-document
-  .getElementById('cerrar-drawer')
-  .addEventListener('click', cerrarDrawer);
+document.getElementById('cerrar-drawer').addEventListener('click', cerrarDrawer);
 document.getElementById('fondo-drawer').addEventListener('click', cerrarDrawer);
 
 // ---------- Enviar pedido por WhatsApp ----------
 document.getElementById('boton-enviar-pedido').addEventListener('click', () => {
-  if (!CARRITO.length) {
-    alert('Tu carrito está vacío.');
-    return;
-  }
+  if (!CARRITO.length) { alert('Tu carrito está vacío.'); return; }
   if (!TIENDA_INFO || !TIENDA_INFO.telefono) {
-    alert(
-      'Esta tienda todavía no registró un número de WhatsApp. Contacta al administrador de Mercado Vivo.'
-    );
+    alert('Esta tienda todavía no registró un número de WhatsApp. Contacta al administrador de Mercado Vivo.');
     return;
   }
 
   let mensaje = `Hola ${TIENDA_INFO.nombre}, quiero hacer este pedido:\n\n`;
   let total = 0;
-  CARRITO.forEach((item) => {
+  CARRITO.forEach(item => {
     const subtotal = item.cantidad * Number(item.precio);
     total += subtotal;
     mensaje += `${item.cantidad}x ${item.nombre} — S/${subtotal.toFixed(2)}\n`;
   });
   mensaje += `\nTotal: S/${total.toFixed(2)}`;
 
-  const telefonoComprador = document
-    .getElementById('telefono-comprador')
-    .value.trim();
+  const telefonoComprador = document.getElementById('telefono-comprador').value.trim();
   if (telefonoComprador) mensaje += `\n\nMi número: ${telefonoComprador}`;
 
   const telefonoTienda = TIENDA_INFO.telefono.replace(/\D/g, '');
-  window.open(
-    `https://wa.me/51${telefonoTienda}?text=${encodeURIComponent(mensaje)}`,
-    '_blank'
-  );
+  window.open(`https://wa.me/51${telefonoTienda}?text=${encodeURIComponent(mensaje)}`, '_blank');
 });
 
 cargarTienda();
